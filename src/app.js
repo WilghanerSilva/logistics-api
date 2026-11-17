@@ -12,7 +12,7 @@ export const app = express();
 
 app.use(express.json());
 app.use(express.static('public')); // interface (apagar dps)
-app.use('/', userRouter);
+app.use('/', userRouter); // para poder usar as rotas 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapi));
 
 app.use((err, req, res, next) => {

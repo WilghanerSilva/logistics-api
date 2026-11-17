@@ -1,6 +1,7 @@
 import {User} from "../Models/UserModels.js";
 
 
+// funções para o Controllers
 export const UserService = {
 
     // função que lista o banco de dados

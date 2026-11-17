@@ -1,6 +1,6 @@
 import {UserService} from "../Services/UserServices.js";
 
-// fazendo o meio campo entre o service e a rota
+// listando o usario
 export const UserController = {
     async ListUsers(req, res){
         try {
@@ -10,6 +10,8 @@ export const UserController = {
             console.error(error);
         }
     },
+
+    // criando o usuario
     async CreateUser(req, res){
         try {
             const user = await UserService.CreateUser(req.body);
