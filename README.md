@@ -1,5 +1,5 @@
 # Logistics API
-
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 API mock de **rastreamento de encomendas entre transportadoras**, desenvolvida para a atividade *Representação de Dados e Interoperabilidade* da disciplina de **Sistemas Distribuídos** (IFCE Tianguá).
 
 ## Contexto
