@@ -3,12 +3,16 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { parse } from 'yaml';
 import { ValidationError } from 'sequelize';
+import { userRouter } from './Routes/UserRoutes.js';
+
 
 const openapi = parse(readFileSync(new URL('../docs/openapi.yaml', import.meta.url), 'utf8'));
 
 export const app = express();
 
 app.use(express.json());
+app.use(express.static('public')); // interface (apagar dps)
+app.use('/', userRouter);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapi));
 
 app.use((err, req, res, next) => {
