@@ -1,0 +1,17 @@
+openapi: 3.0.3
+info:
+  title: Shipment Tracking API
+  version: 1.0.0
+  description: API de transportadora para rastreio de encomendas.
+servers:
+  - url: http://localhost:3000
+
+paths:
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
