@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Shipment Tracking API
+  title: Logistics API
   version: 1.0.0
   description: API de transportadora para rastreio de encomendas.
 servers:

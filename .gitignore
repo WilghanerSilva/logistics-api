@@ -1,2 +1,12 @@
 node_modules/
-*.sqlite
+.env
+npm-debug.log*
+
+# arquivos temporários do SQLite (o database.sqlite é versionado de propósito)
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+.claude/settings.local.json
+.vscode/
+.DS_Store

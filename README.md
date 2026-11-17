@@ -1,4 +1,4 @@
-# Shipment Tracking API
+# Logistics API
 
 API mock de **rastreamento de encomendas entre transportadoras**, desenvolvida para a atividade *Representação de Dados e Interoperabilidade* da disciplina de **Sistemas Distribuídos** (IFCE Tianguá).
 
@@ -57,8 +57,8 @@ npm -v
 ### 2. Clonar o repositório
 
 ```bash
-git clone https://github.com/WilghanerSilva/TransportAPI.git
-cd TransportAPI
+git clone https://github.com/WilghanerSilva/logistics-api.git
+cd logistics-api
 ```
 
 ### 3. Instalar as dependências
@@ -77,7 +77,7 @@ npm start       # modo normal
 
 O servidor sobe em **http://localhost:3000**. A documentação interativa fica em **http://localhost:3000/docs**.
 
-O banco SQLite é criado automaticamente no arquivo `database.sqlite` na primeira execução. Para começar do zero, é só apagar esse arquivo.
+O banco `database.sqlite` é **versionado no repositório**, para que todos usem os mesmos dados mock. Se você alterou os dados localmente e quer voltar ao estado original: `git checkout database.sqlite`.
 
 ### Variáveis de ambiente (opcionais)
 
