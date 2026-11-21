@@ -3,6 +3,7 @@ import { Controller } from '../Controllers/TransportadoraController.js';
 
 export const TransportadoraRouter = Router();
 
+//rotas para as funções
 TransportadoraRouter.get('/api/v1/transportadora/list', Controller.list);
 TransportadoraRouter.post('/api/v1/transportadora/create', Controller.create);
 TransportadoraRouter.get('/api/v1/transportadora/get/:id', Controller.listDataById);

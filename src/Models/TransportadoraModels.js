@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
 
+// modelo das tabelas do bd
 export const TransportadoraBD = sequelize.define('TransportadoraTable', {
     id: {
         type: DataTypes.INTEGER,
@@ -9,19 +10,10 @@ export const TransportadoraBD = sequelize.define('TransportadoraTable', {
     },
     nome: {
         type: DataTypes.STRING,
-        allowNull: false, // Impede que o campo seja omitido ou nulo
+        allowNull: false,
         validate: {
             notNull: { msg: 'O campo nome é obrigatório!' },
             notEmpty: { msg: 'Campo não pode ser vazio!' }
-        }
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true, // Opcional: impede cadastrar dois e-mails iguais
-        validate: {
-            notNull: { msg: 'O campo email é obrigatório!' },
-            isEmail: { msg: 'Email inválido!' }
         }
     }
 });

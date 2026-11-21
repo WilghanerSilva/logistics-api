@@ -1,7 +1,7 @@
 import { Service } from "../Services/TransportadoraServices.js";
 
+// executando as funções
 export const Controller = {
-    // Adicionado o parâmetro 'next' para enviar erros ao middleware do App
     async list(req, res, next) {
         try {
             const transportadoras = await Service.list();
@@ -14,8 +14,7 @@ export const Controller = {
     async listDataById(req, res, next) {
         try {
             const transportadora = await Service.listDataById(req.params.id);
-            
-            // Verifica se o registro realmente existe
+        
             if (!transportadora) {
                 return res.status(404).json({ error: 'Transportadora não encontrada.' });
             }

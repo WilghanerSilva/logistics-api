@@ -1,19 +1,14 @@
 import {EncomendaBD} from "../Models/EncomendaModels.js";
 
 
-// funções para o Controllers
+// gerenciando as funções
 export const Service = {
-
-    // função que lista o banco de dados
     async list(){
         return await EncomendaBD.findAll();
     },
-
     async listDataById(id){
         return await EncomendaBD.findByPk(id);
     },
-
-    // função que cria o usuario
     async create(data){
         return await EncomendaBD.create(data);
     },
@@ -25,5 +20,4 @@ export const Service = {
     async delete(id){
         return await EncomendaBD.destroy({ where: { id: id } });
     }
-
 };
