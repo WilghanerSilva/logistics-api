@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
-import { TransportadoraBD } from './TransportadoraModels.js'; 
 
 export const Encomenda = sequelize.define('Encomenda', {
   id: {

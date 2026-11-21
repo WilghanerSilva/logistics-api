@@ -26,6 +26,20 @@ export const Controller = {
         }
     },
 
+    async listEncomendas(req, res, next) {
+        try {
+            const transportadora = await Service.listEncomendas(req.params.id);
+
+            if (!transportadora) {
+                return res.status(404).json({ error: 'Transportadora não encontrada.' });
+            }
+
+            res.status(200).json(transportadora);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     async create(req, res, next) {
         try {
             const dadosTransportadora = req.body;

@@ -26,6 +26,20 @@ export const Controller = {
         }
     },
 
+    async findByCodigoRastreio(req, res, next) {
+        try {
+            const encomenda = await Service.findByCodigoRastreio(req.params.codigoRastreio);
+
+            if (!encomenda) {
+                return res.status(404).json({ error: 'encomenda não encontrada.' });
+            }
+
+            res.status(200).json(encomenda);
+        } catch (error) {
+            next(error);
+        }
+    },
+
     async create(req, res, next) {
         try {
             const dadosencomenda = req.body;
