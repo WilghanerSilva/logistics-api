@@ -1,10 +1,10 @@
-import { Service } from "../Services/EncomendaServices.js";
+import { EncomendaService as Service } from "../Services/EncomendaServices.js";
 
 // executando as funções
 export const Controller = {
     async list(req, res, next) {
         try {
-            const encomenda = await Service.list();
+            const encomenda = await Service.list(req.query);
             res.status(200).json(encomenda);
         } catch (error) {
             next(error); 
@@ -14,6 +14,8 @@ export const Controller = {
     async listDataById(req, res, next) {
         try {
             const encomenda = await Service.listDataById(req.params.id);
+            
+            // Verifica se o registro realmente existe
             if (!encomenda) {
                 return res.status(404).json({ error: 'encomenda não encontrada.' });
             }

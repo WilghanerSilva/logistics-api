@@ -1,26 +1,32 @@
-import {TransportadoraBD} from "../Models/TransportadoraModels.js";
+import { Op } from 'sequelize';
+import { Transportadora, Encomenda } from '../Models/index.js';
 
-// chamando as funções
-export const Service = {
+export const TransportadoraService = {
 
-    async list(){
-        return await TransportadoraBD.findAll();
-    },
+  async list({ nome } = {}) {
+    const where = {};
+    if (nome) where.nome = { [Op.like]: `%${nome}%` };
+    return await Transportadora.findAll({ where });
+  },
 
-    async listDataById(id){
-        return await TransportadoraBD.findByPk(id);
-    },
+  async listDataById(id) {
+    return await Transportadora.findByPk(id);
+  },
 
-    async create(data){
-        return await TransportadoraBD.create(data);
-    },
+  async listEncomendas(id) {
+    return await Transportadora.findByPk(id, { include: Encomenda, order: [[Encomenda, 'id', 'ASC']] });
+  },
 
-    async update(id, data){
-        return await TransportadoraBD.update(data, { where: { id: id } });
-    },
+  async create(data) {
+    return await Transportadora.create(data);
+  },
 
-    async delete(id){
-        return await TransportadoraBD.destroy({ where: { id: id } });
-    }
+  async update(id, data) {
+    return await Transportadora.update(data, { where: { id: id } });
+  },
+
+  async delete(id) {
+    return await Transportadora.destroy({ where: { id: id } });
+  }
 
 };

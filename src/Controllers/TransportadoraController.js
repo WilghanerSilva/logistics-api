@@ -1,10 +1,10 @@
-import { Service } from "../Services/TransportadoraServices.js";
+import { TransportadoraService as Service } from "../Services/TransportadoraServices.js";
 
 // executando as funções
 export const Controller = {
     async list(req, res, next) {
         try {
-            const transportadoras = await Service.list();
+            const transportadoras = await Service.list(req.query);
             res.status(200).json(transportadoras);
         } catch (error) {
             next(error); 
@@ -14,7 +14,8 @@ export const Controller = {
     async listDataById(req, res, next) {
         try {
             const transportadora = await Service.listDataById(req.params.id);
-        
+            
+            // Verifica se o registro realmente existe
             if (!transportadora) {
                 return res.status(404).json({ error: 'Transportadora não encontrada.' });
             }
