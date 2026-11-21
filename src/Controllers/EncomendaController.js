@@ -1,10 +1,9 @@
-import { Service } from "../Services/EncomendaServices.js";
+import { EncomendaService as Service } from "../Services/EncomendaServices.js";
 
 export const Controller = {
-    // Adicionado o parâmetro 'next' para enviar erros ao middleware do App
     async list(req, res, next) {
         try {
-            const encomenda = await Service.list();
+            const encomenda = await Service.list(req.query);
             res.status(200).json(encomenda);
         } catch (error) {
             next(error); 
@@ -15,7 +14,20 @@ export const Controller = {
         try {
             const encomenda = await Service.listDataById(req.params.id);
             
-            // Verifica se o registro realmente existe
+            if (!encomenda) {
+                return res.status(404).json({ error: 'encomenda não encontrada.' });
+            }
+
+            res.status(200).json(encomenda);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async findByCodigoRastreio(req, res, next) {
+        try {
+            const encomenda = await Service.findByCodigoRastreio(req.params.codigoRastreio);
+
             if (!encomenda) {
                 return res.status(404).json({ error: 'encomenda não encontrada.' });
             }

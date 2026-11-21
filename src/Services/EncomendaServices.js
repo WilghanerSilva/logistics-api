@@ -1,29 +1,47 @@
-import {EncomendaBD} from "../Models/EncomendaModels.js";
+import { Op } from 'sequelize';
+import { Encomenda, Transportadora, Movimentacao } from '../Models/index.js';
 
+const ordemHistorico = [[Movimentacao, 'createdAt', 'ASC'], [Movimentacao, 'id', 'ASC']];
 
-// funções para o Controllers
-export const Service = {
+export const EncomendaService = {
 
-    // função que lista o banco de dados
-    async list(){
-        return await EncomendaBD.findAll();
-    },
+  async list({ transportadoraID, codigoRastreio, origem, destino, include } = {}) {
+    const where = {};
+    if (transportadoraID) where.transportadoraID = transportadoraID;
+    if (codigoRastreio) where.codigoRastreio = codigoRastreio;
+    if (origem) where.origem = { [Op.like]: `%${origem}%` };
+    if (destino) where.destino = { [Op.like]: `%${destino}%` };
 
-    async listDataById(id){
-        return await EncomendaBD.findByPk(id);
-    },
+    const comHistorico = include === 'movimentacoes';
+    return await Encomenda.findAll({
+      where,
+      include: comHistorico ? Movimentacao : [],
+      order: [['id', 'ASC'], ...(comHistorico ? ordemHistorico : [])],
+    });
+  },
 
-    // função que cria o usuario
-    async create(data){
-        return await EncomendaBD.create(data);
-    },
+  async listDataById(id) {
+    return await Encomenda.findByPk(id, { include: [Transportadora, Movimentacao], order: ordemHistorico });
+  },
 
-    async update(id, data){
-        return await EncomendaBD.update(data, { where: { id: id } });
-    },
+  async findByCodigoRastreio(codigoRastreio) {
+    return await Encomenda.findOne({
+      where: { codigoRastreio },
+      include: [Transportadora, Movimentacao],
+      order: ordemHistorico,
+    });
+  },
 
-    async delete(id){
-        return await EncomendaBD.destroy({ where: { id: id } });
-    }
+  async create(data) {
+    return await Encomenda.create(data);
+  },
+
+  async update(id, data) {
+    return await Encomenda.update(data, { where: { id: id } });
+  },
+
+  async delete(id) {
+    return await Encomenda.destroy({ where: { id: id } });
+  }
 
 };
