@@ -5,6 +5,7 @@ import { parse } from 'yaml';
 import { ValidationError } from 'sequelize';
 import { TransportadoraRouter } from './Routes/TransportadoraRoutes.js';
 import { EncomendaRouter } from './Routes/EncomendaRoutes.js';
+import { MovimentacaoRouter } from './Routes/MovimentacaoRoutes.js';
 
 const openapi = parse(readFileSync(new URL('../docs/openapi.yaml', import.meta.url), 'utf8'));
 export const app = express();
@@ -12,6 +13,7 @@ export const app = express();
 app.use(express.json());
 app.use('/', EncomendaRouter);
 app.use('/', TransportadoraRouter);
+app.use('/', MovimentacaoRouter);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapi));
 
 app.use((err, req, res, next) => {
