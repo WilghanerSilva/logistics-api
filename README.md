@@ -231,7 +231,7 @@ Não existem rotas para editar ou remover movimentações: um histórico de rast
 
 - **Node.js** + **Express 5**: servidor HTTP
 - **Sequelize** + **SQLite**: persistência em um arquivo local, sem instalar banco de dados
-- **Swagger UI**: documentação interativa gerada a partir de um arquivo OpenAPI escrito à mão (`docs/openapi.yaml`)
+- **Swagger UI** + **swagger-jsdoc**: documentação interativa gerada a partir dos comentários `@openapi` nos arquivos de rotas
 
 ## Como rodar localmente
 
@@ -293,11 +293,11 @@ Exemplo: `PORT=8080 npm run dev`
 ```
 ├── database.sqlite      # banco com os dados mock (versionado)
 ├── docs/
-│   ├── openapi.yaml     # especificação da API (OpenAPI 3)
 │   └── insomnia.json    # coleção de requisições para importar no Insomnia
 └── src/
     ├── server.js        # inicializa o banco e sobe o servidor
     ├── app.js           # configuração do Express, Swagger e tratamento de erros
+    ├── swagger.js       # configuração do OpenAPI
     ├── database.js      # conexão Sequelize/SQLite
     ├── Models/          # tabelas, validações e relacionamentos (index.js)
     ├── Routes/          # URLs de cada recurso
