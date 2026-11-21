@@ -1,0 +1,256 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_source": "logistics-api",
+  "resources": [
+    {
+      "_id": "wrk_logistics",
+      "_type": "workspace",
+      "name": "Logistics API",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_logistics",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000/api/v1"
+      }
+    },
+    {
+      "_id": "fld_transportadora",
+      "_type": "request_group",
+      "parentId": "wrk_logistics",
+      "name": "Transportadora"
+    },
+    {
+      "_id": "req_transportadora_0",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Listar",
+      "method": "GET",
+      "metaSortKey": 0,
+      "url": "{{ _.base_url }}/transportadora",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_transportadora_1",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Buscar por id",
+      "method": "GET",
+      "metaSortKey": 1,
+      "url": "{{ _.base_url }}/transportadora/1",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_transportadora_2",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Criar",
+      "method": "POST",
+      "metaSortKey": 2,
+      "url": "{{ _.base_url }}/transportadora/create",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Nova Transportadora\",\n  \"formatoData\": \"ISO8601\",\n  \"listaStatus\": [\n    \"POSTADO\",\n    \"EM_TRANSITO\",\n    \"ENTREGUE\"\n  ]\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_transportadora_3",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Atualizar",
+      "method": "PUT",
+      "metaSortKey": 3,
+      "url": "{{ _.base_url }}/transportadora/update/1",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Valor atualizado\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_transportadora_4",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Remover",
+      "method": "DELETE",
+      "metaSortKey": 4,
+      "url": "{{ _.base_url }}/transportadora/delete/1",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "fld_encomenda",
+      "_type": "request_group",
+      "parentId": "wrk_logistics",
+      "name": "Encomenda"
+    },
+    {
+      "_id": "req_encomenda_0",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Listar",
+      "method": "GET",
+      "metaSortKey": 0,
+      "url": "{{ _.base_url }}/encomenda",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_encomenda_1",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Buscar por id",
+      "method": "GET",
+      "metaSortKey": 1,
+      "url": "{{ _.base_url }}/encomenda/1",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_encomenda_2",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Criar",
+      "method": "POST",
+      "metaSortKey": 2,
+      "url": "{{ _.base_url }}/encomenda/create",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigoRastreio\": \"TS000000001BR\",\n  \"transportadoraID\": 1,\n  \"origem\": \"Fortaleza/CE\",\n  \"destino\": \"Tianguá/CE\",\n  \"dataPostagem\": \"20/11/2026 10:00\",\n  \"previsaoEntrega\": \"25/11/2026 10:00\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_encomenda_3",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Atualizar",
+      "method": "PUT",
+      "metaSortKey": 3,
+      "url": "{{ _.base_url }}/encomenda/update/1",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"destino\": \"Valor atualizado\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_encomenda_4",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Remover",
+      "method": "DELETE",
+      "metaSortKey": 4,
+      "url": "{{ _.base_url }}/encomenda/delete/1",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "fld_movimentacao",
+      "_type": "request_group",
+      "parentId": "wrk_logistics",
+      "name": "Movimentacao"
+    },
+    {
+      "_id": "req_enc_filtros",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Listar com filtros",
+      "method": "GET",
+      "metaSortKey": 115,
+      "url": "{{ _.base_url }}/encomenda?transportadoraID=2&include=movimentacoes",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_enc_rastreio",
+      "_type": "request",
+      "parentId": "fld_encomenda",
+      "name": "Rastrear por código",
+      "method": "GET",
+      "metaSortKey": 116,
+      "url": "{{ _.base_url }}/encomenda/rastreio/RN000000003BR",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_tr_nome",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Listar por nome",
+      "method": "GET",
+      "metaSortKey": 117,
+      "url": "{{ _.base_url }}/transportadora?nome=express",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_tr_encomendas",
+      "_type": "request",
+      "parentId": "fld_transportadora",
+      "name": "Encomendas da transportadora",
+      "method": "GET",
+      "metaSortKey": 118,
+      "url": "{{ _.base_url }}/transportadora/1/encomendas",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_mov_list",
+      "_type": "request",
+      "parentId": "fld_movimentacao",
+      "name": "Listar (filtros: encomendaID, status)",
+      "method": "GET",
+      "metaSortKey": 119,
+      "url": "{{ _.base_url }}/movimentacao/list?encomendaID=3",
+      "body": {},
+      "headers": []
+    },
+    {
+      "_id": "req_mov_create",
+      "_type": "request",
+      "parentId": "fld_movimentacao",
+      "name": "Registrar evento",
+      "method": "POST",
+      "metaSortKey": 120,
+      "url": "{{ _.base_url }}/movimentacao/create",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"encomendaID\": 3,\n  \"status\": \"SAIU_PARA_ENTREGA\",\n  \"local\": \"Camocim/CE\",\n  \"latitude\": -2.9022,\n  \"longitude\": -40.8411,\n  \"dataHora\": \"21/11/2026 08:00\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
+  ]
+}
