@@ -31,7 +31,7 @@ Como os dados vêm de transportadoras diferentes, a API reproduz de propósito a
 
 Todas as rotas começam com **`http://localhost:3000/api/v1`** e respondem em JSON. O arquivo [`docs/insomnia.json`](docs/insomnia.json) pode ser importado no Insomnia com exemplos de todas as requisições.
 
-A documentação interativa (Swagger) fica em **http://localhost:3000/docs**. Por enquanto, ela cobre as rotas `GET /transportadora` e `POST /transportadora/create`. Veja [Documentação com Swagger](#documentação-com-swagger) para documentar as demais.
+A documentação interativa (Swagger) fica em **http://localhost:3000/docs** e é gerada a partir do arquivo [`docs/openapi.json`](docs/openapi.json), que descreve todas as rotas, parâmetros, corpos de requisição e respostas.
 
 ### Respostas de erro
 
@@ -115,7 +115,7 @@ Não existem rotas para editar ou remover movimentações: um histórico de rast
 
 - **Node.js** + **Express 5**: servidor HTTP
 - **Sequelize** + **SQLite**: persistência em um arquivo local, sem instalar banco de dados
-- **Swagger UI** + **swagger-jsdoc**: documentação interativa gerada a partir dos comentários `@openapi` nos arquivos de rotas
+- **Swagger UI**: documentação interativa a partir da especificação OpenAPI em `docs/openapi.json`
 
 ## Como rodar localmente
 
@@ -178,14 +178,14 @@ Exemplo: `PORT=8080 npm run dev`
 ├── database.sqlite      # banco com os dados mock (versionado)
 ├── docs/
 │   ├── insomnia.json    # coleção de requisições para importar no Insomnia
+│   ├── openapi.json     # especificação da API (OpenAPI 3), exibida em /docs
 │   └── modelagem.png    # diagrama da modelagem de dados
 └── src/
     ├── server.js        # inicializa o banco e sobe o servidor
     ├── app.js           # configuração do Express, Swagger e tratamento de erros
-    ├── swagger.js       # configuração do OpenAPI
     ├── database.js      # conexão Sequelize/SQLite
     ├── Models/          # tabelas, validações e relacionamentos (index.js)
-    ├── Routes/          # URLs de cada recurso e comentários @openapi
+    ├── Routes/          # URLs de cada recurso
     ├── Controllers/     # leitura da requisição e montagem da resposta
     └── Services/        # consultas ao banco
 ```
@@ -194,5 +194,5 @@ Exemplo: `PORT=8080 npm run dev`
 
 - **`npm install` falha ao compilar o `sqlite3`:** confirme que está usando Node 20 ou superior (`node -v`). Versões antigas não têm binário pré-compilado.
 - **`EADDRINUSE: address already in use`:** a porta 3000 já está ocupada. Use outra com `PORT=3001 npm run dev`.
-- **O `/docs` não mostra uma rota recém-documentada:** confira se o caminho no comentário `@openapi` é o completo (começando com `/api/v1`) e se a indentação do YAML está correta. Se estiver tudo certo, encerre o `npm run dev` (Ctrl+C) e rode de novo.
-- **O `/docs` abre sem rotas:** o servidor precisa ser iniciado pela raiz do projeto (`npm run dev` ou `npm start`), porque o `swagger-jsdoc` procura os arquivos de rotas em `./src/Routes`.
+- **O `/docs` não mostra uma alteração no `openapi.json`:** o arquivo é lido quando o servidor sobe. Encerre o `npm run dev` (Ctrl+C) e rode de novo.
+- **O servidor não sobe depois de editar o `openapi.json`:** o arquivo provavelmente tem um erro de sintaxe JSON (vírgula sobrando, aspas faltando). Valide colando o conteúdo em https://editor.swagger.io.

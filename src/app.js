@@ -1,10 +1,12 @@
+import { readFileSync } from 'node:fs';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { ValidationError } from 'sequelize';
 import { TransportadoraRouter } from './Routes/TransportadoraRoutes.js';
 import { EncomendaRouter } from './Routes/EncomendaRoutes.js';
 import { MovimentacaoRouter } from './Routes/MovimentacaoRoutes.js';
-import { swaggerSpec } from './swagger.js';
+
+const openapi = JSON.parse(readFileSync(new URL('../docs/openapi.json', import.meta.url), 'utf8'));
 
 export const app = express();
 
@@ -12,7 +14,7 @@ app.use(express.json());
 app.use('/', EncomendaRouter);
 app.use('/', TransportadoraRouter);
 app.use('/', MovimentacaoRouter);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapi));
 
 app.use((err, req, res, next) => {
   if (err instanceof ValidationError) {

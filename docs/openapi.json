@@ -1,0 +1,674 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Logistics API",
+    "version": "1.0.0",
+    "description": "API REST para gerenciamento de transportadoras, encomendas e histórico de movimentações."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de desenvolvimento local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Transportadora",
+      "description": "Operações de gerenciamento de transportadoras"
+    },
+    {
+      "name": "Encomenda",
+      "description": "Operações de gerenciamento e rastreamento de encomendas"
+    },
+    {
+      "name": "Movimentacao",
+      "description": "Registro e consulta do histórico de movimentações das encomendas"
+    }
+  ],
+  "paths": {
+    "/api/v1/transportadora": {
+      "get": {
+        "tags": ["Transportadora"],
+        "summary": "Lista as transportadoras",
+        "description": "Retorna todas as transportadoras cadastradas, com suporte a filtro parcial pelo nome.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "nome",
+            "required": false,
+            "description": "Busca parcial pelo nome da transportadora",
+            "schema": { "type": "string" },
+            "example": "express"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de transportadoras retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Transportadora" }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/transportadora/create": {
+      "post": {
+        "tags": ["Transportadora"],
+        "summary": "Cadastra uma transportadora",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TransportadoraInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transportadora criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Transportadora" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/transportadora/{id}": {
+      "get": {
+        "tags": ["Transportadora"],
+        "summary": "Busca uma transportadora pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da transportadora",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transportadora encontrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Transportadora" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/transportadora/{id}/encomendas": {
+      "get": {
+        "tags": ["Transportadora"],
+        "summary": "Lista uma transportadora e suas encomendas vinculadas",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da transportadora",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados da transportadora com a lista de encomendas associadas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TransportadoraComEncomendas" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/transportadora/update/{id}": {
+      "put": {
+        "tags": ["Transportadora"],
+        "summary": "Atualiza os dados de uma transportadora",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da transportadora",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TransportadoraUpdateInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Array indicando a quantidade de registros afetados (ex: [1])",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "integer" }, "example": [1] }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/transportadora/delete/{id}": {
+      "delete": {
+        "tags": ["Transportadora"],
+        "summary": "Remove uma transportadora pelo ID",
+        "description": "Exclui a transportadora e, em cascata, suas encomendas e movimentações associadas.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da transportadora",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Número de registros removidos (1 se excluído, 0 se não encontrado)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "integer", "example": 1 }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/": {
+      "get": {
+        "tags": ["Encomenda"],
+        "summary": "Lista as encomendas",
+        "description": "Retorna encomendas com suporte a filtros por transportadora, código de rastreio, origem, destino e inclusão do histórico de movimentações.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "transportadoraID",
+            "required": false,
+            "description": "Filtra pelo ID da transportadora",
+            "schema": { "type": "integer" },
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "codigoRastreio",
+            "required": false,
+            "description": "Filtra pelo código exato de rastreio",
+            "schema": { "type": "string" },
+            "example": "GX000001004BR"
+          },
+          {
+            "in": "query",
+            "name": "origem",
+            "required": false,
+            "description": "Busca parcial pela cidade/local de origem",
+            "schema": { "type": "string" },
+            "example": "São Paulo"
+          },
+          {
+            "in": "query",
+            "name": "destino",
+            "required": false,
+            "description": "Busca parcial pela cidade/local de destino",
+            "schema": { "type": "string" },
+            "example": "Fortaleza"
+          },
+          {
+            "in": "query",
+            "name": "include",
+            "required": false,
+            "description": "Use 'movimentacoes' para incluir o histórico de movimentações de cada encomenda",
+            "schema": { "type": "string", "enum": ["movimentacoes"] },
+            "example": "movimentacoes"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de encomendas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Encomenda" }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/create": {
+      "post": {
+        "tags": ["Encomenda"],
+        "summary": "Cadastra uma nova encomenda",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EncomendaInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Encomenda criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Encomenda" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/{id}": {
+      "get": {
+        "tags": ["Encomenda"],
+        "summary": "Busca uma encomenda pelo ID",
+        "description": "Retorna os detalhes da encomenda incluindo os dados da transportadora e o histórico ordenado de movimentações.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da encomenda",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes completos da encomenda",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EncomendaDetalhada" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/rastreio/{codigoRastreio}": {
+      "get": {
+        "tags": ["Encomenda"],
+        "summary": "Rastreia uma encomenda pelo código de rastreio",
+        "description": "Retorna os detalhes da encomenda, dados da transportadora e o histórico completo de movimentações.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "codigoRastreio",
+            "required": true,
+            "description": "Código único de rastreio da encomenda",
+            "schema": { "type": "string" },
+            "example": "GX000001004BR"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encomenda encontrada com histórico de rastreio",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EncomendaDetalhada" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFoundError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/update/{id}": {
+      "put": {
+        "tags": ["Encomenda"],
+        "summary": "Atualiza os dados de uma encomenda",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da encomenda",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EncomendaUpdateInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Array indicando a quantidade de registros afetados (ex: [1])",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "type": "integer" }, "example": [1] }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/encomenda/delete/{id}": {
+      "delete": {
+        "tags": ["Encomenda"],
+        "summary": "Remove uma encomenda pelo ID",
+        "description": "Exclui a encomenda e, em cascata, todas as suas movimentações associadas.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID numérico da encomenda",
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Número de registros removidos (1 se excluído, 0 se não encontrado)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "integer", "example": 1 }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/movimentacao/list": {
+      "get": {
+        "tags": ["Movimentacao"],
+        "summary": "Lista as movimentações",
+        "description": "Retorna as movimentações em ordem cronológica de registro (createdAt e id), com filtros opcionais.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "encomendaID",
+            "required": false,
+            "description": "Filtra pelo ID da encomenda",
+            "schema": { "type": "integer" },
+            "example": 14
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "description": "Filtra pelo código exato de status, como a transportadora o usa",
+            "schema": { "type": "string" },
+            "example": "IN_TRANSIT"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de movimentações retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Movimentacao" }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/api/v1/movimentacao/create": {
+      "post": {
+        "tags": ["Movimentacao"],
+        "summary": "Registra uma movimentação no histórico de uma encomenda",
+        "description": "O status precisa estar na listaStatus da transportadora da encomenda, e a dataHora deve seguir o formatoData dela.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MovimentacaoInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Movimentação registrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Movimentacao" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Transportadora": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 2 },
+          "nome": { "type": "string", "example": "Global Express" },
+          "formatoData": { "type": "string", "example": "ISO8601" },
+          "listaStatus": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED"]
+          },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "TransportadoraInput": {
+        "type": "object",
+        "required": ["nome", "formatoData", "listaStatus"],
+        "properties": {
+          "nome": { "type": "string", "example": "Nova Transportadora" },
+          "formatoData": { "type": "string", "example": "ISO8601" },
+          "listaStatus": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["POSTADO", "EM_TRANSITO", "ENTREGUE"]
+          }
+        }
+      },
+      "TransportadoraUpdateInput": {
+        "type": "object",
+        "description": "Todos os campos são opcionais; apenas os enviados são alterados.",
+        "properties": {
+          "nome": { "type": "string", "example": "Global Express Brasil" },
+          "formatoData": { "type": "string", "example": "ISO8601" },
+          "listaStatus": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "TransportadoraComEncomendas": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Transportadora" },
+          {
+            "type": "object",
+            "properties": {
+              "Encomendas": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Encomenda" }
+              }
+            }
+          }
+        ]
+      },
+      "Encomenda": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 14 },
+          "codigoRastreio": { "type": "string", "example": "GX000001004BR" },
+          "origem": { "type": "string", "example": "Recife/PE" },
+          "destino": { "type": "string", "example": "Tianguá/CE" },
+          "dataPostagem": {
+            "type": "string",
+            "description": "No formato de data da transportadora (formatoData)",
+            "example": "2026-11-17T11:00:00-03:00"
+          },
+          "previsaoEntrega": {
+            "type": "string",
+            "description": "No formato de data da transportadora (formatoData)",
+            "example": "2026-11-22T11:00:00-03:00"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "transportadoraID": { "type": "integer", "example": 2 }
+        }
+      },
+      "EncomendaInput": {
+        "type": "object",
+        "required": ["codigoRastreio", "transportadoraID", "origem", "destino", "dataPostagem", "previsaoEntrega"],
+        "properties": {
+          "codigoRastreio": { "type": "string", "example": "TS000000001BR" },
+          "transportadoraID": { "type": "integer", "example": 2 },
+          "origem": { "type": "string", "example": "Fortaleza/CE" },
+          "destino": { "type": "string", "example": "Tianguá/CE" },
+          "dataPostagem": { "type": "string", "example": "2026-11-20T10:00:00-03:00" },
+          "previsaoEntrega": { "type": "string", "example": "2026-11-25T10:00:00-03:00" }
+        }
+      },
+      "EncomendaUpdateInput": {
+        "type": "object",
+        "description": "Todos os campos são opcionais; apenas os enviados são alterados.",
+        "properties": {
+          "codigoRastreio": { "type": "string" },
+          "transportadoraID": { "type": "integer" },
+          "origem": { "type": "string" },
+          "destino": { "type": "string", "example": "Sobral/CE" },
+          "dataPostagem": { "type": "string" },
+          "previsaoEntrega": { "type": "string" }
+        }
+      },
+      "EncomendaDetalhada": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Encomenda" },
+          {
+            "type": "object",
+            "properties": {
+              "Transportadora": { "$ref": "#/components/schemas/Transportadora" },
+              "Movimentacoes": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Movimentacao" }
+              }
+            }
+          }
+        ]
+      },
+      "Movimentacao": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 45 },
+          "status": { "type": "string", "example": "OUT_FOR_DELIVERY" },
+          "latitude": { "type": "number", "example": -3.73221 },
+          "longitude": { "type": "number", "example": -40.99174 },
+          "local": { "type": "string", "example": "Tianguá/CE" },
+          "dataHora": {
+            "type": "string",
+            "description": "No formato de data da transportadora (formatoData)",
+            "example": "2026-11-20T08:00:00-03:00"
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "encomendaID": { "type": "integer", "example": 14 }
+        }
+      },
+      "MovimentacaoInput": {
+        "type": "object",
+        "required": ["encomendaID", "status", "local", "latitude", "longitude", "dataHora"],
+        "properties": {
+          "encomendaID": { "type": "integer", "example": 14 },
+          "status": {
+            "type": "string",
+            "description": "Precisa estar na listaStatus da transportadora da encomenda",
+            "example": "DELIVERED"
+          },
+          "local": { "type": "string", "example": "Tianguá/CE" },
+          "latitude": { "type": "number", "minimum": -90, "maximum": 90, "example": -3.73221 },
+          "longitude": { "type": "number", "minimum": -180, "maximum": 180, "example": -40.99174 },
+          "dataHora": { "type": "string", "example": "2026-11-20T15:30:00-03:00" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Transportadora não encontrada." }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["O campo nome é obrigatório!"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Dados inválidos ou campo obrigatório ausente",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ValidationErrorResponse" }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Registro não encontrado",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Erro interno do servidor",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+            "example": { "error": "Internal server error" }
+          }
+        }
+      }
+    }
+  }
+}
